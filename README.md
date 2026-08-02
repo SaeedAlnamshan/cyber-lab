@@ -1,4 +1,4 @@
-# 🛡️ Home Cybersecurity Lab
+# 🛡️ Cyber Defense & Penetration Testing 
 
 A personal cybersecurity home lab built for hands-on penetration testing, network defense, and security tool development. Everything here is documented for learning and professional portfolio purposes.
 
