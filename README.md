@@ -1,103 +1,186 @@
-# 🛡️ Cyber Defense & Penetration Testing 
+# 🛡️ Cybersecurity Home Lab
 
-A personal cybersecurity home lab built for hands-on penetration testing, network defense, and security tool development. Everything here is documented for learning and professional portfolio purposes.
+A hands-on cybersecurity home lab designed to develop practical skills in network security, firewall configuration, traffic analysis, system administration, and penetration testing.
 
----
-
-## 🗺️ Network Topology
-
-```
-Internet
-    │
-    │ (NAT)
-┌───▼────────────────────────────────────────┐
-│              VMware Workstation             │
-│                                            │
-│  ┌──────────────────────────────────────┐  │
-│  │         pfSense Firewall             │  │
-│  │   WAN: VMnet1 | LAN: VMnet2          │  │
-│  │         Attacker: VMnet3             │  │
-│  └────────┬─────────────────┬───────────┘  │
-│           │                 │              │
-│    VMnet2 (LAN)      VMnet3 (Attacker)     │
-│           │                 │              │
-│  ┌────────▼──────┐  ┌───────▼───────────┐  │
-│  │ Ubuntu Target │  │    Kali Linux     │  │
-│  │ DVWA          │  │  (Attack Machine) │  │
-│  │ Juice Shop    │  │    PinTester      │  │
-│  │ Metasploitable│  └───────────────────┘  │
-│  └───────────────┘                         │
-└────────────────────────────────────────────┘
-```
+The lab has been built and tested across both **VMware Workstation** and **Oracle VirtualBox**, providing practical experience with different virtualization and virtual networking environments.
 
 ---
 
-## 🧱 Lab Components
+## 🎯 Lab Objectives
 
-| Machine | OS | Role | Network |
-|---|---|---|---|
-| pfSense | FreeBSD | Firewall / Router | VMnet1, VMnet2, VMnet3 |
-| Kali Linux | Debian | Attacker | VMnet3 |
-| Ubuntu | Ubuntu 22.04 | Vulnerable Targets | VMnet2 |
-
----
-
-## 🛠️ Tools & Services
-
-### Attack
-- **Kali Linux** — Primary attack platform
-- **PinTester** — Custom Python pentesting tool (see `/tools/PinTester`)
-- Nmap, Metasploit, Burp Suite, Hydra
-
-### Targets (running via Docker on Ubuntu)
-- **DVWA** — Damn Vulnerable Web Application
-- **OWASP Juice Shop** — Modern vulnerable web app
-- **Metasploitable2** — Intentionally vulnerable Linux
-
-### Defense & Monitoring
-- **pfSense** — Firewall, routing, traffic logging
-- pfSense logs monitored for attack detection practice
+- Build an isolated cybersecurity testing environment
+- Configure and manage virtual networks
+- Deploy pfSense as a firewall and router
+- Practice network reconnaissance using Kali Linux
+- Test connectivity and firewall behavior
+- Develop practical troubleshooting skills
+- Safely practice offensive and defensive security techniques
+- Document configurations, experiments, and lessons learned
 
 ---
 
-## 📁 Repository Structure
+## 🧱 Lab Environment
 
-```
-cyber-lab/
-├── README.md
-├── network/
-│   ├── topology.md          # Detailed network design
-│   └── pfsense-config.md    # pfSense setup guide
-├── machines/
-│   ├── kali.md              # Kali setup & tools
-│   ├── ubuntu-targets.md    # Target machine setup
-│   └── vulnerable-services.md
-├── tools/
-│   └── PinTester/           # Custom pentesting tool
-├── writeups/                # Attack & defense reports
-└── diagrams/                # Network diagrams
-```
+### Virtualization Platforms
+
+- VMware Workstation
+- Oracle VirtualBox
+
+### Virtual Machines
+
+- **pfSense** — Firewall, router, DHCP and network control
+- **Kali Linux** — Security testing and reconnaissance workstation
+- **Ubuntu Linux** — Target and Linux administration environment
 
 ---
 
-## 🎯 Goals
+## 🌐 Network Architecture
 
-- [x] Design isolated virtual lab network
-- [x] Deploy pfSense firewall with segmented interfaces
-- [ ] Configure vulnerable target services
-- [ ] Document attack paths and defensive rules
-- [ ] Develop and test PinTester against lab targets
+The lab uses isolated virtual networking to separate the cybersecurity environment from the physical host network.
 
----
+Current VirtualBox architecture:
 
-## ⚠️ Disclaimer
+```text
+                    Internet
+                       │
+                       │
+                  Virtual NAT
+                       │
+                    [ WAN ]
+                  ┌──────────┐
+                  │ pfSense  │
+                  └──────────┘
+                    [ LAN ]
+                       │
+                10.0.0.0/24
+                       │
+             ┌─────────┴─────────┐
+             │                   │
+        Kali Linux           Ubuntu Linux
+      Security Testing          Target
 
-This lab is for **educational purposes only**. All testing is performed in an isolated virtual environment with no connection to external networks.
+🔥 pfSense Configuration
 
----
+Practical configuration includes:
 
-## 👤 Author
+WAN interface using NAT
+Isolated LAN network
+DHCP configuration
+Firewall rules
+NAT configuration
+DNS Resolver configuration
+Connectivity testing
+Firewall rule testing
+⚔️ Kali Linux
 
-**Saeed Al-Namshan**
-Manager of Media & Internal Communications | Cybersecurity Enthusiast
-King Fahad Military Medical Complex — Dammam, Saudi Arabia
+Kali Linux is used as the security testing workstation.
+
+Current activities include:
+
+Network discovery
+Host connectivity testing
+TCP port scanning
+Service discovery
+Nmap reconnaissance
+Firewall behavior testing
+🐧 Ubuntu Linux
+
+Ubuntu is used as a Linux target system for:
+
+Network connectivity testing
+Service testing
+Firewall experiments
+Future security testing scenarios
+🔄 Lab Development
+Phase 1 — VMware Workstation
+
+The initial lab environment was developed using VMware Workstation.
+
+This phase provided experience with:
+
+Virtual machine deployment
+Virtual network adapters
+Isolated networking
+pfSense integration
+Network troubleshooting
+
+During development, networking and adapter issues required extensive troubleshooting.
+
+Phase 2 — Oracle VirtualBox
+
+The environment was subsequently rebuilt using Oracle VirtualBox.
+
+The current implementation includes:
+
+pfSense WAN and LAN interfaces
+NAT connectivity
+Isolated lab networking
+Kali Linux
+Ubuntu Linux
+DHCP
+DNS
+Firewall rules
+Nmap and connectivity testing
+
+Moving between virtualization platforms provided additional practical experience in diagnosing and rebuilding virtual network environments.
+
+🧪 Security Testing
+
+Testing performed in the lab includes:
+
+ICMP connectivity tests
+TCP connectivity tests
+Port scanning
+Service discovery
+Firewall rule validation
+Network troubleshooting
+
+Additional offensive and defensive scenarios will be documented as the lab develops.
+
+🛠️ Tools & Technologies
+pfSense
+Kali Linux
+Ubuntu Linux
+VMware Workstation
+Oracle VirtualBox
+Nmap
+Linux networking tools
+TCP/IP
+DHCP
+DNS
+NAT
+Firewall Rules
+📚 Key Skills Developed
+
+This project demonstrates practical experience with:
+
+Network segmentation
+Virtual networking
+Firewall administration
+Linux environments
+Network reconnaissance
+TCP/IP fundamentals
+Security troubleshooting
+Lab architecture
+Technical documentation
+🚧 Project Status
+
+Active / Ongoing
+
+The lab is continuously being expanded with additional security testing, attack simulations, defensive monitoring, and documentation.
+
+Future work will be added only after it has been implemented and tested.
+
+⚠️ Disclaimer
+
+This lab is intended strictly for educational purposes and authorized cybersecurity testing.
+
+All security testing is performed within controlled environments owned or explicitly authorized for testing.
+
+👤 Author
+
+Saeed Alnamshan
+
+Cybersecurity | GRC | Cyber Defense
+
+GitHub: SaeedAlnamshan
