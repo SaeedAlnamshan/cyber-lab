@@ -1,75 +1,120 @@
-# Ubuntu — Target Machine
+# Ubuntu Linux — Lab Target
 
-## VM Specs
+## Overview
 
-| Field | Value |
-|-------|-------|
-| OS | Ubuntu 22.04 LTS |
-| RAM | 4GB |
-| CPU | 2 vCPU |
-| Disk | 50GB |
-| Network | VMnet2 (192.168.20.10/24) |
-| Gateway | 192.168.20.1 (pfSense) |
+Ubuntu Linux is used as a target and Linux administration system within the cybersecurity home lab.
 
-## Network Configuration
+The Ubuntu environment has been deployed during different stages of the lab using both **VMware Workstation** and **Oracle VirtualBox**.
 
-```bash
-# /etc/netplan/00-installer-config.yaml
-network:
-  ethernets:
-    ens33:
-      addresses: [192.168.20.10/24]
-      gateway4: 192.168.20.1
-  version: 2
-```
+---
 
-```bash
-sudo netplan apply
-```
+## Role in the Lab
 
-## Installed Services
+Ubuntu is currently used for:
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| DVWA | 8080 | Web app vulnerabilities |
-| OWASP Juice Shop | 3000 | Modern web app attacks |
-| SSH | 22 | Remote access practice |
-| Docker | — | Container management |
+- Network connectivity testing
+- TCP/IP testing
+- Service discovery
+- Nmap reconnaissance from Kali Linux
+- pfSense firewall testing
+- Linux administration practice
+- Network troubleshooting
 
-## Setup Steps
+---
 
-### 1. Update System
-```bash
-sudo apt update && sudo apt upgrade -y
-```
+# Phase 1 — VMware Workstation
 
-### 2. Install Docker
-```bash
-sudo apt install docker.io docker-compose -y
-sudo systemctl enable docker
-sudo usermod -aG docker $USER
-```
+During the initial VMware implementation, Ubuntu was deployed on an isolated target network.
 
-### 3. Run DVWA
-```bash
-docker run -d -p 8080:80 vulnerables/web-dvwa
-```
+Example network used during this phase:
 
-### 4. Run Juice Shop
-```bash
-docker run -d -p 3000:3000 bkimminich/juice-shop
-```
+```text
+Network: 192.168.20.0/24
+Gateway: pfSense
+Virtual Network: VMnet2
+The target and attacker networks were separated, with traffic controlled through pfSense.
 
-### 5. Verify Services
-```bash
-docker ps
-# Access from Kali:
-# http://192.168.20.10:8080 → DVWA
-# http://192.168.20.10:3000 → Juice Shop
-```
+This environment was used to practice:
 
-## Notes
+Virtual networking
+Network segmentation
+Linux network configuration
+Routing through pfSense
+Connectivity troubleshooting
+Phase 2 — Oracle VirtualBox
 
-- Machine is intentionally vulnerable — never expose to real network
-- All services run inside Docker for easy reset
-- To reset a service: `docker restart <container_name>`
+Ubuntu was later deployed in the rebuilt Oracle VirtualBox environment.
+
+Current logical architecture:
+
+Kali Linux
+     │
+     │ Testing / Reconnaissance
+     ▼
+Lab Network — 10.0.0.0/24
+     │
+     ├── pfSense
+     │
+     └── Ubuntu Linux
+
+Ubuntu operates inside the controlled lab network.
+
+Client IP addresses may vary when DHCP is used.
+
+Verified Lab Activities
+
+Activities performed with Ubuntu in the lab include:
+
+ICMP connectivity testing
+TCP connectivity testing
+Network troubleshooting
+Nmap scanning from Kali Linux
+Port and service discovery
+Firewall behavior testing
+Vulnerable Applications
+
+Intentionally vulnerable applications such as:
+
+DVWA
+OWASP Juice Shop
+Metasploitable
+
+are considered potential future additions to the lab.
+
+They are not documented as implemented components until deployment and testing have been completed and verified.
+
+Planned Expansion
+
+Future Ubuntu lab development may include:
+
+Additional network services
+Web application security testing
+Vulnerable application deployment
+Logging and monitoring
+Defensive security scenarios
+Attack-and-detection exercises
+
+These items will be documented as completed only after implementation and validation.
+
+Skills Practiced
+
+The Ubuntu target environment supports practical learning in:
+
+Linux administration
+TCP/IP networking
+Network troubleshooting
+Service discovery
+Network segmentation
+Firewall testing
+Security lab methodology
+Safety
+
+Ubuntu is used only inside the controlled cybersecurity lab.
+
+Security testing is restricted to systems owned by or explicitly authorized for testing.
+
+Status
+
+Active / Ongoing
+
+Additional services and vulnerable applications will be documented only after they have been deployed and tested.
