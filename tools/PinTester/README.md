@@ -1,59 +1,90 @@
 # PinTester
 
-A custom CLI-based penetration testing tool developed and tested against the home lab environment.
+> 🚧 **Status: Planned / In Development**
 
-## Overview
+PinTester is a planned Python CLI security-testing project intended to complement the cybersecurity home lab.
 
-PinTester is a Python-based tool designed for automated security testing of web applications and network services. Built and refined through hands-on testing against DVWA, Juice Shop, and Metasploitable in the home lab.
+The goal is to build the tool incrementally while learning Python automation, network reconnaissance, service enumeration, and security testing in a controlled lab environment.
 
-## Features
+---
 
-- [ ] Port scanning
-- [ ] Service enumeration
-- [ ] Web vulnerability scanning
-- [ ] Brute force module
+## Project Objective
+
+PinTester is intended to automate selected repetitive security-testing tasks performed inside the home lab.
+
+Rather than replacing established tools such as Nmap, the project is designed as a practical Python development exercise that integrates security concepts with scripting and automation.
+
+---
+
+## Planned Features
+
+- [ ] Host discovery
+- [ ] TCP port scanning
+- [ ] Basic service enumeration
+- [ ] Nmap integration
+- [ ] Command-line arguments
+- [ ] Structured scan output
 - [ ] Report generation
 
-> Features updated as development progresses
+Additional functionality may be added as development progresses.
 
-## Requirements
+---
 
-```
-Python 3.10+
-```
+## Intended Environment
 
-```bash
-pip install -r requirements.txt
-```
+The tool is intended for use within the isolated cybersecurity home lab consisting of:
 
-## Installation
+- Kali Linux — security testing workstation
+- Ubuntu Linux — target system
+- pfSense — firewall and network segmentation
+- VMware Workstation / Oracle VirtualBox — virtualization environments
 
-```bash
-git clone https://github.com/saeedalnamshan-boop/cyber-lab
-cd cyber-lab/tools/PinTester
-pip install -r requirements.txt
-```
+---
 
-## Usage
+## Planned Workflow
 
-```bash
-python pintester.py --target 192.168.20.10 --scan full
-```
+```text
+Kali Linux
+    |
+    | PinTester
+    v
+pfSense
+    |
+    v
+Authorized Lab Target
 
-## Lab Testing Targets
+PinTester will be developed and tested only against systems specifically configured for security experimentation inside the lab.
 
-| Target | IP | Service |
-|--------|----|---------|
-| DVWA | 192.168.20.10:8080 | Web app testing |
-| Juice Shop | 192.168.20.10:3000 | Web app testing |
-| Metasploitable | 192.168.20.20 | Network testing |
+Development Roadmap
+Phase 1 — Network Reconnaissance
+ Accept target IP from CLI
+ Validate target input
+ Scan selected TCP ports
+ Display discovered open ports
+Phase 2 — Service Enumeration
+ Identify common network services
+ Integrate Nmap scanning
+ Parse scan results
+Phase 3 — Reporting
+ Save scan results
+ Generate structured reports
+ Add timestamps and target information
+Current Repository Status
 
-## Development Notes
+The project is currently in the planning and development stage.
 
-- All testing performed in isolated lab environment
-- No external targets — lab only
-- Tool evolves alongside lab writeups in `/writeups/`
+The implementation will be added incrementally, and features will only be marked complete after they have been implemented and tested in the lab.
 
-## Author
+Ethical Use
 
-**Saeed Al-Namshan**
+This project is intended exclusively for:
+
+Personal cybersecurity education
+Authorized security testing
+Controlled lab environments
+
+It should not be used against systems without explicit authorization.
+
+Author
+
+Saeed Alnamshan
