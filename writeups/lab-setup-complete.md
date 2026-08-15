@@ -1,58 +1,111 @@
-# Lab Setup Complete — First Connectivity Test
+# Lab Setup — Connectivity Validation
 
-**Date:** 2026-07-27  
-**Status:** ✅ Success
+**Status:** ✅ Connectivity Successfully Validated
 
 ---
 
-## What Was Built
+## Overview
 
-A fully isolated 3-segment virtual network inside VMware Workstation:
+This document records an early connectivity-validation milestone of the cybersecurity home lab.
 
-| Component | Details |
-|-----------|---------|
-| Hypervisor | VMware Workstation |
-| Firewall | pfSense 2.8.1 |
-| Attacker | Kali Linux 2025.4 |
-| Target | Ubuntu 26.04 Server |
+The lab environment has evolved during development and has been tested using both **VMware Workstation** and **Oracle VirtualBox**. Network addressing and virtual adapter configuration may differ between the two environments.
 
-## Network Summary
+The purpose of this stage was to verify communication between the attacker machine, pfSense firewall, and isolated target network before continuing with security testing.
 
-| Segment | Subnet | Gateway |
-|---------|--------|---------|
-| WAN (NAT) | 192.168.213.0/24 | pfSense em0 |
-| LAN (Targets) | 192.168.20.0/24 | 192.168.20.1 |
-| Attacker (Kali) | 192.168.30.0/24 | 192.168.30.1 |
+---
 
-## Connectivity Tests
+## Lab Components
 
-```bash
-# From Kali → pfSense OPT1
+| Component | Role |
+|---|---|
+| pfSense | Firewall, routing, traffic filtering, and network segmentation |
+| Kali Linux | Attacker / security testing machine |
+| Ubuntu Linux | Target machine |
+| VMware Workstation | Initial virtualization environment |
+| Oracle VirtualBox | Current/alternate virtualization environment |
+
+---
+
+## Network Architecture
+
+The lab uses isolated virtual networking to separate security testing traffic from the physical/home network.
+
+Logical traffic flow:
+
+```text
+Kali Linux
+     |
+     v
+  pfSense
+     |
+     v
+Ubuntu Target
+pfSense is positioned between the attacker and target environments to provide routing, firewall control, and traffic visibility.
+
+Connectivity Validation
+
+Connectivity between Kali Linux and the pfSense interfaces was successfully tested during the initial VMware implementation.
+
+Example validation:
+
 ping 192.168.30.1 -c 4
-# Result: 4/4 packets received ✅
 
-# From Kali → pfSense LAN
+Result:
+
+4/4 packets received
+
+Connectivity to the pfSense LAN interface was also successfully verified:
+
 ping 192.168.20.1 -c 4
-# Result: 4/4 packets received ✅
-```
 
-## pfSense Configuration
+Result:
 
-- WAN → em0 (NAT/DHCP)
-- LAN → em1 (192.168.20.1/24) with DHCP range 192.168.20.100-200
-- OPT1 → em2 (192.168.30.1/24) with DHCP range 192.168.30.100-200
-- Firewall rule added on OPT1: Allow all traffic from Kali to LAN
+4/4 packets received
 
-## Kali IP Assignment
+These tests confirmed that the virtual network interfaces and routing path were functioning correctly.
 
-```
-eth0: 192.168.30.100/24 (DHCP from pfSense)
-Gateway: 192.168.30.1
-```
+pfSense Configuration
 
-## Next Steps
+pfSense was configured to provide:
 
-- [ ] Install Docker on Ubuntu and deploy DVWA + Juice Shop
-- [ ] Run first Nmap scan from Kali against Ubuntu
-- [ ] Test PinTester against lab targets
-- [ ] Configure pfSense logging and review attack traffic
+Network segmentation
+Routing between lab segments
+Firewall policy enforcement
+DHCP where required
+NAT for controlled Internet access
+Traffic logging and monitoring
+
+Firewall rules were tested to observe permitted and blocked traffic between lab systems.
+
+Security Testing
+
+After connectivity was established, Kali Linux was used for network reconnaissance and connectivity testing against systems inside the isolated lab.
+
+Testing included tools and techniques such as:
+
+Nmap network reconnaissance
+ICMP connectivity testing
+TCP connectivity testing
+Firewall rule validation
+Network troubleshooting
+
+All testing was performed within the controlled cybersecurity lab environment.
+
+Lab Evolution
+
+The environment has been rebuilt and tested across different virtualization platforms as part of the learning process.
+
+This included troubleshooting virtual networking, pfSense interfaces, routing, firewall rules, NAT, and connectivity between Kali Linux and Ubuntu.
+
+Current architecture and configuration details are maintained in the main project documentation.
+
+Result
+
+✅ Virtual network established
+✅ pfSense routing operational
+✅ Kali connectivity verified
+✅ Network segmentation tested
+✅ Firewall behavior tested
+✅ Isolated cybersecurity testing environment established
+
+This milestone provided the networking foundation for continued cybersecurity experimentation and defensive/offensive security practice.
