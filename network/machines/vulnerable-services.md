@@ -1,84 +1,120 @@
-# Vulnerable Services
+# Vulnerable Services — Lab Roadmap
 
-## Overview
+## Status
 
-All services run on Ubuntu target machine (192.168.20.10) via Docker.
-Accessible from Kali at the addresses below.
+🚧 **Planned / Not Yet Implemented**
 
-## Services
+This document defines the roadmap for intentionally vulnerable services that may be added to the cybersecurity home lab.
+
+These applications are **not considered deployed or tested components of the lab until their implementation and validation are documented**.
+
+---
+
+## Purpose
+
+Future vulnerable services will provide controlled targets for practicing:
+
+- Web application security testing
+- Network reconnaissance
+- Vulnerability identification
+- Attack-path analysis
+- Firewall monitoring
+- Defensive detection
+- Security documentation
+
+All testing will remain inside authorized lab environments.
+
+---
+
+## Planned Targets
 
 ### DVWA — Damn Vulnerable Web Application
 
-| Field | Value |
-|-------|-------|
-| URL | http://192.168.20.10:8080 |
-| Username | admin |
-| Password | password |
-| Docker image | vulnerables/web-dvwa |
+**Status:** Planned
 
-**Vulnerabilities covered:**
+Potential learning areas:
+
 - SQL Injection
-- XSS (Reflected & Stored)
-- CSRF
-- File Upload
+- Cross-Site Scripting (XSS)
 - Command Injection
-- Brute Force
+- Authentication weaknesses
+- Web application reconnaissance
 
 ---
 
 ### OWASP Juice Shop
 
-| Field | Value |
-|-------|-------|
-| URL | http://192.168.20.10:3000 |
-| Login | register new account |
-| Docker image | bkimminich/juice-shop |
+**Status:** Planned
 
-**Vulnerabilities covered:**
-- Broken Authentication
-- Sensitive Data Exposure
-- Injection
-- Broken Access Control
-- Security Misconfiguration
+Potential learning areas:
+
+- Modern web application vulnerabilities
+- Authentication and authorization issues
+- Input validation
+- API security concepts
+- OWASP Top 10 scenarios
 
 ---
 
-### Metasploitable 2
+### Metasploitable
 
-| Field | Value |
-|-------|-------|
-| IP | 192.168.20.20 |
-| Username | msfadmin |
-| Password | msfadmin |
-| Type | Standalone VM (not Docker) |
+**Status:** Planned
 
-**Vulnerabilities covered:**
-- FTP Anonymous login
-- Samba misconfiguration
-- vsftpd backdoor
-- UnrealIRCd backdoor
-- MySQL no-auth access
+Potential learning areas:
+
+- Network reconnaissance
+- Service enumeration
+- Vulnerability identification
+- Exploitation concepts
+- Post-exploitation concepts in a controlled environment
 
 ---
 
-## Quick Commands
+## Planned Architecture
 
-```bash
-# Start all Docker services
-docker start $(docker ps -aq)
+Future vulnerable targets may be deployed behind pfSense inside the isolated lab environment.
 
-# Stop all Docker services
-docker stop $(docker ps -aq)
+```text
+Kali Linux
+     |
+     | Authorized Security Testing
+     v
+  pfSense
 
-# Reset DVWA
-docker restart dvwa
+No intentionally vulnerable service should be exposed directly to the physical home network or the public Internet.
 
-# Check running services
-docker ps
-```
 
-## Notes
+Validation Requirements
 
-- Change DVWA security level to Low when starting, then increase as skills improve
-- Juice Shop has 100+ challenges — track progress inside the app
-- Metasploitable runs as a separate VM on VMnet2
+A target will only be marked as Implemented after:
+
+ Deployment is completed
+ Network connectivity is verified
+ Service availability is confirmed
+ Security testing is performed
+ Results are documented
+ Relevant evidence is added to the repository
+Future Documentation
+
+As vulnerable targets are implemented, individual documentation will include:
+
+Environment and architecture
+Installation/configuration
+Network placement
+Reconnaissance results
+Vulnerability observations
+Testing methodology
+Defensive observations
+Lessons learned
+Ethical Use
+
+All vulnerable applications and security testing documented in this repository are intended strictly for:
+
+Cybersecurity education
+Personal lab experimentation
+Authorized security testing
+
+Testing against systems without explicit authorization is outside the scope of this project.
+     |
+     v
+Isolated Vulnerable Target
