@@ -163,6 +163,119 @@ TCP/IP fundamentals
 Security troubleshooting
 Lab architecture
 Technical documentation
+
+## Linux Firewall Hardening & SSH Access Control
+
+A practical security-hardening exercise was performed against the Ubuntu target to assess exposed services, configure host-based firewall protection, and restrict SSH access to an authorized security workstation.
+
+### Environment
+
+- Kali Linux: `192.168.1.101`
+- Ubuntu Target: `192.168.1.100`
+- pfSense LAN: `192.168.1.1`
+- Oracle VirtualBox
+
+### Initial Reconnaissance
+
+Connectivity between Kali Linux and the Ubuntu target was successfully validated.
+
+Nmap was used to identify exposed TCP services on the Ubuntu system.
+
+The assessment identified:
+
+- **Port:** 22/TCP
+- **State:** Open
+- **Service:** SSH
+
+A full TCP port scan across all 65,535 ports confirmed that SSH was the only externally reachable TCP service detected during the assessment.
+
+Service enumeration identified OpenSSH running on Ubuntu.
+
+### SSH Validation
+
+SSH connectivity from Kali Linux to the Ubuntu target was successfully tested.
+
+The SSH session was established using:
+
+`ssh saeed@192.168.1.100`
+
+The active session was verified on Ubuntu, confirming that the connection originated from the Kali workstation at `192.168.1.101`.
+
+### Security Assessment
+
+The Ubuntu target was inspected to identify potential security weaknesses.
+
+The assessment identified the following:
+
+- SSH password authentication was enabled.
+- UFW host-based firewall was initially inactive.
+- SSH was listening on TCP port 22.
+- SSH access was initially permitted without source-IP restriction.
+- Security updates were pending on the Ubuntu target.
+- SSH was the only externally reachable TCP service detected during the scan.
+
+These findings demonstrated that although the attack surface was relatively small, SSH access could be further restricted to reduce unnecessary exposure.
+
+### Firewall Hardening
+
+UFW (Uncomplicated Firewall) was enabled on the Ubuntu target.
+
+The firewall was configured with a default policy that denies unsolicited incoming connections while allowing outbound traffic.
+
+SSH access was then restricted to the designated Kali security workstation.
+
+The resulting access-control rule was:
+
+`22/tcp ALLOW IN 192.168.1.101`
+
+General SSH rules that previously allowed connections from `Anywhere` and `Anywhere (v6)` were removed.
+
+This implemented a source-based access-control policy where only the authorized Kali workstation could initiate SSH connections to the Ubuntu target.
+
+### Verification
+
+The firewall configuration was tested after implementation.
+
+From Kali Linux (`192.168.1.101`):
+
+- TCP port 22 remained open.
+- SSH authentication remained functional.
+- Remote access to Ubuntu was successful.
+
+A full TCP scan after enabling UFW showed that TCP port 22 remained accessible to the authorized Kali workstation while the remaining TCP ports were filtered.
+
+An additional SSH connection attempt was initiated from pfSense (`192.168.1.1`).
+
+The connection did not establish an SSH session, while the authorized Kali workstation continued to connect successfully.
+
+This confirmed that the firewall rule was enforcing source-based SSH access control as intended.
+
+### Security Concepts Practiced
+
+- Network reconnaissance
+- Nmap scanning
+- Service enumeration
+- Attack surface analysis
+- SSH administration
+- Host-based firewall configuration
+- UFW administration
+- Source-based firewall rules
+- TCP port filtering
+- Least privilege
+- Access control
+- Security hardening
+- Security control validation
+- Defense-in-depth
+
+### Result
+
+The Ubuntu target was hardened from a broadly accessible SSH configuration to a source-restricted configuration.
+
+SSH access is now permitted from the designated Kali security workstation at `192.168.1.101`, while unauthorized sources are blocked by the Ubuntu host firewall.
+
+The exercise demonstrated a complete defensive security workflow:
+
+**Discover → Assess → Harden → Validate**
 🚧 Project Status
 
 Active / Ongoing
