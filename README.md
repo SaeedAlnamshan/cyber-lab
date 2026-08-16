@@ -166,51 +166,57 @@ Technical documentation
 
 ## Linux Firewall Hardening & SSH Access Control
 
-A practical security-hardening exercise was performed against the Ubuntu target to assess exposed services, implement host-based firewall controls, restrict SSH access, and validate the resulting security configuration.
+A practical security-hardening exercise was performed against the Ubuntu target to identify exposed services, configure host-based firewall protection, restrict SSH access, and validate the implemented security controls.
 
 ### Environment
 
-- **Kali Linux:** `192.168.1.101`
-- **Ubuntu Target:** `192.168.1.100`
-- **pfSense LAN:** `192.168.1.1`
+- **Kali Linux:** 192.168.1.101
+- **Ubuntu Target:** 192.168.1.100
+- **pfSense LAN:** 192.168.1.1
 - **Virtualization Platform:** Oracle VirtualBox
 
 ### Initial Reconnaissance
 
-Connectivity from Kali Linux to the Ubuntu target was successfully validated.
+Connectivity between Kali Linux and the Ubuntu target was successfully validated.
 
-Nmap was used to identify exposed TCP services on the Ubuntu system.
+Nmap was used from Kali Linux to identify exposed TCP services on the Ubuntu system.
 
-```text
-PORT     STATE   SERVICE
-22/tcp   open    ssh
-```
+Command:
 
-A full TCP port scan was also performed against the Ubuntu target.
+    nmap -p 22 192.168.1.100
 
-```bash
-sudo nmap -p- 192.168.1.100
-```
+Result:
 
-The scan identified:
+    PORT     STATE    SERVICE
+    22/tcp   open     ssh
 
-- TCP port `22` open for SSH.
-- All other scanned TCP ports were closed or not responding.
+The scan confirmed that TCP port 22 was open and the SSH service was accessible.
+
+A full TCP port scan was then performed:
+
+    sudo nmap -p- 192.168.1.100
+
+The assessment identified:
+
+- TCP port 22 open for SSH.
+- Other TCP ports were closed or filtered.
 - SSH was the primary exposed remote-access service.
 
 ### SSH Connectivity Test
 
-An SSH connection was initiated from the Kali security workstation to the Ubuntu target.
+An SSH connection was initiated from Kali Linux to the Ubuntu target.
 
-```bash
-ssh saeed@192.168.1.100
-```
+Command:
 
-The connection was successfully established, confirming that:
+    ssh saeed@192.168.1.100
+
+The connection was successfully established.
+
+This confirmed:
 
 - The SSH service was running.
-- TCP port `22` was reachable.
-- Authentication was functioning correctly.
+- TCP port 22 was reachable.
+- SSH authentication was functional.
 - Kali Linux could remotely access the Ubuntu target.
 
 ### Initial Firewall Assessment
@@ -219,74 +225,87 @@ The Ubuntu host firewall was inspected using UFW (Uncomplicated Firewall).
 
 UFW was enabled to provide host-based firewall protection.
 
-The initial SSH configuration permitted TCP port `22` from unrestricted sources.
+The firewall status was inspected using:
 
-This represented a broader attack surface than necessary because SSH only needed to be accessible from the designated Kali security workstation.
+    sudo ufw status verbose
+
+Initially, SSH access on TCP port 22 was broadly permitted.
+
+Allowing SSH from unrestricted sources creates unnecessary exposure when remote administration is only required from a designated security workstation.
 
 ### Firewall Hardening
 
-A source-based firewall rule was created to allow SSH access only from the Kali Linux workstation.
+A source-based firewall rule was implemented to restrict SSH access to the Kali Linux workstation.
 
-```bash
-sudo ufw allow from 192.168.1.101 to any port 22 proto tcp
-```
+Command:
 
-The firewall policy was configured to deny unsolicited incoming connections while allowing legitimate outbound traffic.
+    sudo ufw allow from 192.168.1.101 to any port 22 proto tcp
 
-The resulting SSH access-control rule was:
+The firewall rules were inspected using:
 
-```text
-22/tcp     ALLOW IN     192.168.1.101
-```
+    sudo ufw status numbered
 
-General SSH rules that previously allowed connections from `Anywhere` and `Anywhere (v6)` were removed.
+The configuration initially contained general SSH rules allowing connections from unrestricted IPv4 and IPv6 sources.
 
-The firewall rules were reviewed using:
+The unrestricted rules were removed.
 
-```bash
-sudo ufw status numbered
-```
+The resulting SSH access-control configuration permitted TCP port 22 from:
 
-After removing the unrestricted SSH rules, the configuration restricted SSH access to the authorized Kali workstation.
+    192.168.1.101
 
-### Verification
+This created a source-based access-control policy where the designated Kali Linux workstation was authorized to initiate SSH connections to the Ubuntu target.
 
-The hardened firewall configuration was tested after implementation.
+### Firewall Policy
 
-From Kali Linux (`192.168.1.101`):
+The Ubuntu firewall was configured according to a restrictive inbound policy.
 
-- TCP port `22` remained reachable.
-- SSH authentication remained functional.
-- Remote access to Ubuntu was successful.
+The security model was:
 
-The SSH port was verified using:
+- Deny unsolicited incoming connections.
+- Allow legitimate outgoing connections.
+- Permit SSH only from the designated Kali workstation.
 
-```bash
-nmap -p 22 192.168.1.100
-```
+This reduced the attack surface of the Ubuntu target while preserving required administrative access.
 
-The result confirmed:
+### Verification from Kali Linux
 
-```text
-PORT     STATE   SERVICE
-22/tcp   open    ssh
-```
+After implementing the firewall rules, connectivity was tested again from Kali Linux.
 
-A full TCP scan after enabling UFW demonstrated that the Ubuntu firewall was filtering unsolicited TCP traffic while maintaining authorized SSH connectivity.
+Command:
 
-### Access-Control Validation
+    nmap -p 22 192.168.1.100
 
-An additional SSH connection attempt was initiated from pfSense (`192.168.1.1`) toward the Ubuntu target.
+Result:
 
-The connection did not establish an SSH session, while the authorized Kali workstation continued to connect successfully.
+    PORT     STATE    SERVICE
+    22/tcp   open     ssh
 
-This demonstrated that the firewall rule was enforcing source-based SSH access control as intended.
+TCP port 22 remained accessible from Kali Linux.
 
-The validation showed the difference between:
+SSH connectivity was then tested again:
 
-- An authorized source: Kali Linux (`192.168.1.101`)
-- A non-authorized source: pfSense (`192.168.1.1`)
-- A protected target: Ubuntu (`192.168.1.100`)
+    ssh saeed@192.168.1.100
+
+The SSH session was successfully established.
+
+This confirmed that the authorized Kali workstation retained administrative access after firewall hardening.
+
+### Unauthorized Source Validation
+
+An additional SSH connection attempt was initiated from pfSense at 192.168.1.1 toward the Ubuntu target.
+
+The connection did not establish an SSH session.
+
+Meanwhile, Kali Linux at 192.168.1.101 continued to connect successfully.
+
+This demonstrated that the Ubuntu firewall was enforcing source-based SSH access control.
+
+The test environment therefore contained:
+
+- **Authorized source:** Kali Linux at 192.168.1.101
+- **Unauthorized test source:** pfSense at 192.168.1.1
+- **Protected target:** Ubuntu at 192.168.1.100
+- **Protected service:** SSH on TCP port 22
 
 ### Security Concepts Practiced
 
@@ -297,12 +316,12 @@ The validation showed the difference between:
 - Attack surface analysis
 - SSH administration
 - Remote-access testing
+- Linux firewall administration
+- UFW configuration
 - Host-based firewall configuration
-- UFW administration
-- Source-based firewall rules
+- Source-based access control
 - TCP port filtering
 - Least privilege
-- Access control
 - Security hardening
 - Security control validation
 - Defense-in-depth
@@ -311,21 +330,39 @@ The validation showed the difference between:
 
 The Ubuntu target was hardened from a broadly accessible SSH configuration to a source-restricted configuration.
 
-SSH access is now permitted from the designated Kali security workstation at `192.168.1.101`, while unauthorized sources are restricted by the Ubuntu host firewall.
+SSH access was restricted to the designated Kali Linux security workstation at 192.168.1.101.
 
-The exercise demonstrated a complete defensive security workflow:
+The exercise demonstrated a practical defensive security workflow:
 
 **Discover → Assess → Harden → Validate**
 
-This lab provides practical experience in identifying exposed services, evaluating unnecessary exposure, implementing access controls, and verifying that security controls operate as intended.
+The lab provided hands-on experience identifying exposed services, analyzing the attack surface, implementing firewall access controls, restricting remote administration, and validating that the security controls operated as intended.
+
+## Key Skills Developed
+
+This exercise demonstrates practical experience with:
+
+- Linux security administration
+- Host-based firewall configuration
+- UFW
+- SSH access control
+- Nmap
+- Network reconnaissance
+- TCP/IP
+- Service enumeration
+- Access-control implementation
+- Least-privilege principles
+- Security hardening
+- Security validation
+- Technical documentation
 
 ## Project Status
 
 **Active / Ongoing**
 
-The lab is continuously being expanded with additional security testing, attack simulations, defensive monitoring, and technical documentation.
+The cybersecurity home lab continues to be expanded with additional security testing, defensive monitoring, attack simulations, and technical documentation.
 
-Future work will be documented only after it has been implemented and tested.
+Future exercises will be documented after they have been implemented and validated in the lab environment.
 
 ## Disclaimer
 
