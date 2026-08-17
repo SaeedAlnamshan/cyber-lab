@@ -393,6 +393,87 @@ All security testing is performed within controlled environments owned or explic
 
 Saeed Alnamshan
 
+
+## HTTP Service Discovery & Firewall Validation
+
+A practical HTTP service testing exercise was performed against the Ubuntu target using Apache, Nmap, cURL, and UFW.
+
+### Environment
+
+- **Kali Linux:** 192.168.1.101
+- **Ubuntu Target:** 192.168.1.100
+- **Web Server:** Apache2
+- **Protocol:** HTTP
+- **Port:** TCP/80
+
+### Service Deployment
+
+Apache2 was installed and started on the Ubuntu target to provide an HTTP service.
+
+### Initial Discovery
+
+From Kali Linux, Nmap service detection was performed against the Ubuntu target.
+
+    nmap -sV 192.168.1.100
+
+Initially, TCP port 80 was filtered because the Ubuntu UFW firewall did not permit inbound HTTP traffic from Kali.
+
+### Firewall Configuration
+
+A source-based firewall rule was configured to permit HTTP access only from the Kali security workstation.
+
+    sudo ufw allow from 192.168.1.101 to any port 80 proto tcp
+
+After applying the rule, Nmap identified TCP port 80 as open and detected the HTTP service.
+
+### HTTP Validation
+
+The Apache web service was tested directly from Kali using cURL.
+
+    curl http://192.168.1.100
+
+The Ubuntu Apache default HTML page was successfully returned, confirming that the HTTP service was reachable and responding correctly.
+
+### Firewall Blocking Test
+
+The HTTP firewall rule was temporarily removed while Apache remained running.
+
+A subsequent HTTP request from Kali was performed with:
+
+    curl --max-time 5 http://192.168.1.100
+
+The connection timed out, demonstrating that the service remained active while network access was blocked by the host-based firewall.
+
+Nmap testing against TCP port 80 also demonstrated the effect of firewall filtering.
+
+    nmap -p 80 192.168.1.100
+
+The HTTP firewall rule was then restored to return the lab to its intended configuration.
+
+### Security Concepts Practiced
+
+- HTTP service deployment
+- Service discovery
+- Nmap service detection
+- HTTP testing with cURL
+- Host-based firewall administration
+- UFW rule management
+- Source-based access control
+- TCP port filtering
+- Firewall validation
+- Defense-in-depth
+- Network troubleshooting
+
+### Result
+
+The exercise demonstrated the distinction between a running network service and network accessibility.
+
+Apache remained operational throughout the blocking test, while UFW controlled whether the service could be reached from the Kali workstation.
+
+This demonstrated the workflow:
+
+**Deploy → Discover → Allow → Validate → Block → Test → Restore**
+
 Cybersecurity | GRC | Cyber Defense
 
 GitHub: SaeedAlnamshan
